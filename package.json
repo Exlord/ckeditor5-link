@@ -1,7 +1,7 @@
 {
-  "name": "@ckeditor/ckeditor5-link",
+  "name": "ckeditor5-custom-link",
   "version": "18.0.0",
-  "description": "Link feature for CKEditor 5.",
+  "description": "Link feature for CKEditor 5. Customized to force absolute links.",
   "keywords": [
     "ckeditor",
     "ckeditor5",
@@ -36,7 +36,7 @@
     "node": ">=8.0.0",
     "npm": ">=5.7.1"
   },
-  "author": "CKSource (http://cksource.com/)",
+  "author": "FarhadAdeli (https://farhadadeli.ir/)",
   "license": "GPL-2.0-or-later",
   "homepage": "https://ckeditor.com/ckeditor-5",
   "bugs": "https://github.com/ckeditor/ckeditor5/issues",

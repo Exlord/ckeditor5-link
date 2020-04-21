@@ -7,10 +7,12 @@
  * @module link/utils
  */
 
-import { upperFirst } from 'lodash-es';
+import {upperFirst} from 'lodash-es';
 
-const ATTRIBUTE_WHITESPACES = /[\u0000-\u0020\u00A0\u1680\u180E\u2000-\u2029\u205f\u3000]/g; // eslint-disable-line no-control-regex
+const ATTRIBUTE_WHITESPACES = /[\u0000-\u0020\u00A0\u1680\u180E\u2000-\u2029\u205f\u3000]/g; // eslint-disable-line
+																							 // no-control-regex
 const SAFE_URL = /^(?:(?:https?|ftps?|mailto):|[^a-z]|[a-z+.-]+(?:[^a-z+.:-]|$))/i;
+const ABSOLUTE_URL = /^(https?|ftps?|mailto):\/\//i;
 
 /**
  * Returns `true` if a given view node is the link element.
@@ -18,8 +20,8 @@ const SAFE_URL = /^(?:(?:https?|ftps?|mailto):|[^a-z]|[a-z+.-]+(?:[^a-z+.:-]|$))
  * @param {module:engine/view/node~Node} node
  * @returns {Boolean}
  */
-export function isLinkElement( node ) {
-	return node.is( 'attributeElement' ) && !!node.getCustomProperty( 'link' );
+export function isLinkElement(node) {
+	return node.is('attributeElement') && !!node.getCustomProperty('link');
 }
 
 /**
@@ -28,10 +30,10 @@ export function isLinkElement( node ) {
  * @param {String} href
  * @returns {module:engine/view/attributeelement~AttributeElement}
  */
-export function createLinkElement( href, writer ) {
+export function createLinkElement(href, writer) {
 	// Priority 5 - https://github.com/ckeditor/ckeditor5-link/issues/121.
-	const linkElement = writer.createAttributeElement( 'a', { href }, { priority: 5 } );
-	writer.setCustomProperty( 'link', true, linkElement );
+	const linkElement = writer.createAttributeElement('a', {href}, {priority: 5});
+	writer.setCustomProperty('link', true, linkElement);
 
 	return linkElement;
 }
@@ -47,19 +49,19 @@ export function createLinkElement( href, writer ) {
  * @param {*} url
  * @returns {String} Safe URL.
  */
-export function ensureSafeUrl( url ) {
-	url = String( url );
+export function ensureSafeUrl(url) {
+	url = String(url);
 
-	return isSafeUrl( url ) ? url : '#';
+	return isSafeUrl(url) ? url : '#';
 }
 
 // Checks whether the given URL is safe for the user (does not contain any malicious code).
 //
 // @param {String} url URL to check.
-function isSafeUrl( url ) {
-	const normalizedUrl = url.replace( ATTRIBUTE_WHITESPACES, '' );
+function isSafeUrl(url) {
+	const normalizedUrl = url.replace(ATTRIBUTE_WHITESPACES, '');
 
-	return normalizedUrl.match( SAFE_URL );
+	return normalizedUrl.match(SAFE_URL);
 }
 
 /**
@@ -75,42 +77,47 @@ function isSafeUrl( url ) {
  * where the label values should be localized.
  * @returns {Array.<module:link/link~LinkDecoratorDefinition>}
  */
-export function getLocalizedDecorators( t, decorators ) {
+export function getLocalizedDecorators(t, decorators) {
 	const localizedDecoratorsLabels = {
-		'Open in a new tab': t( 'Open in a new tab' ),
-		'Downloadable': t( 'Downloadable' )
+		'Open in a new tab': t('Open in a new tab'),
+		'Downloadable'     : t('Downloadable')
 	};
 
-	decorators.forEach( decorator => {
-		if ( decorator.label && localizedDecoratorsLabels[ decorator.label ] ) {
-			decorator.label = localizedDecoratorsLabels[ decorator.label ];
+	decorators.forEach(decorator => {
+		if (decorator.label && localizedDecoratorsLabels[decorator.label]) {
+			decorator.label = localizedDecoratorsLabels[decorator.label];
 		}
 		return decorator;
-	} );
+	});
 
 	return decorators;
 }
 
 /**
- * Converts an object with defined decorators to a normalized array of decorators. The `id` key is added for each decorator and
- * is used as the attribute's name in the model.
+ * Converts an object with defined decorators to a normalized array of decorators. The `id` key is added for each
+ * decorator and is used as the attribute's name in the model.
  *
  * @param {Object.<String, module:link/link~LinkDecoratorDefinition>} decorators
  * @returns {Array.<module:link/link~LinkDecoratorDefinition>}
  */
-export function normalizeDecorators( decorators ) {
+export function normalizeDecorators(decorators) {
 	const retArray = [];
 
-	if ( decorators ) {
-		for ( const [ key, value ] of Object.entries( decorators ) ) {
+	if (decorators) {
+		for (const [key, value] of Object.entries(decorators)) {
 			const decorator = Object.assign(
 				{},
 				value,
-				{ id: `link${ upperFirst( key ) }` }
+				{id: `link${upperFirst(key)}`}
 			);
-			retArray.push( decorator );
+			retArray.push(decorator);
 		}
 	}
 
 	return retArray;
+}
+
+export function ensureAbsolute(href) {
+	if (!href.match(ABSOLUTE_URL))
+		return `http://${href}`;
 }
