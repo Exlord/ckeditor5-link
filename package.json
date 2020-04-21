@@ -1,5 +1,5 @@
 {
-  "name": "@ckeditor/ckeditor5-link",
+  "name": "@ckeditor/ckeditor5-custom-link",
   "version": "18.0.0",
   "description": "Link feature for CKEditor 5.",
   "keywords": [
