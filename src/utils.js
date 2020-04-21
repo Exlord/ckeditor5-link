@@ -117,6 +117,9 @@ export function normalizeDecorators( decorators ) {
 }
 
 export function ensureAbsolute(href) {
+	console.log(href);
+	console.log(ABSOLUTE_URL);
+	console.log(href.match(ABSOLUTE_URL));
 	if (!href.match(ABSOLUTE_URL))
 		return `http://${href}`;
 }
