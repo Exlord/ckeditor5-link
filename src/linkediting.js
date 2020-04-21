@@ -10,7 +10,7 @@
 import Plugin from '@ckeditor/ckeditor5-core/src/plugin';
 import LinkCommand from './linkcommand';
 import UnlinkCommand from './unlinkcommand';
-import { createLinkElement, ensureSafeUrl, getLocalizedDecorators, normalizeDecorators } from './utils';
+import {createLinkElement, ensureAbsolute, ensureSafeUrl, getLocalizedDecorators, normalizeDecorators} from './utils';
 import AutomaticDecorators from './utils/automaticdecorators';
 import ManualDecorator from './utils/manualdecorator';
 import bindTwoStepCaretToAttribute from '@ckeditor/ckeditor5-engine/src/utils/bindtwostepcarettoattribute';
@@ -64,6 +64,8 @@ export default class LinkEditing extends Plugin {
 
 		editor.conversion.for( 'editingDowncast' )
 			.attributeToElement( { model: 'linkHref', view: ( href, writer ) => {
+					if(editor.config.get( 'link.forceAbsoluteLink' ))
+						href = ensureAbsolute(href);
 				return createLinkElement( ensureSafeUrl( href ), writer );
 			} } );
 

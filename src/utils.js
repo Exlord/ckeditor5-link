@@ -11,6 +11,7 @@ import { upperFirst } from 'lodash-es';
 
 const ATTRIBUTE_WHITESPACES = /[\u0000-\u0020\u00A0\u1680\u180E\u2000-\u2029\u205f\u3000]/g; // eslint-disable-line no-control-regex
 const SAFE_URL = /^(?:(?:https?|ftps?|mailto):|[^a-z]|[a-z+.-]+(?:[^a-z+.:-]|$))/i;
+const ABSOLUTE_URL = '';
 
 /**
  * Returns `true` if a given view node is the link element.
@@ -113,4 +114,9 @@ export function normalizeDecorators( decorators ) {
 	}
 
 	return retArray;
+}
+
+export function ensureAbsolute(href) {
+	if (!href.match(ABSOLUTE_URL))
+		return `http://${href}`;
 }
