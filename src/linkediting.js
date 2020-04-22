@@ -9,18 +9,18 @@
 
 import Plugin                                                                                          from '@ckeditor/ckeditor5-core/src/plugin';
 import LinkCommand
-																									   from './linkcommand';
+																																																			 from './linkcommand';
 import UnlinkCommand
-																									   from './unlinkcommand';
+																																																			 from './unlinkcommand';
 import {createLinkElement, ensureAbsolute, ensureSafeUrl, getLocalizedDecorators, normalizeDecorators} from './utils';
 import AutomaticDecorators
-																									   from './utils/automaticdecorators';
+																																																			 from './utils/automaticdecorators';
 import ManualDecorator
-																									   from './utils/manualdecorator';
+																																																			 from './utils/manualdecorator';
 import bindTwoStepCaretToAttribute
-																									   from '@ckeditor/ckeditor5-engine/src/utils/bindtwostepcarettoattribute';
+																																																			 from '@ckeditor/ckeditor5-engine/src/utils/bindtwostepcarettoattribute';
 import findLinkRange
-																									   from './findlinkrange';
+																																																			 from './findlinkrange';
 import '../theme/link.css';
 
 const HIGHLIGHT_CLASS       = 'ck-link_selected';
@@ -66,16 +66,23 @@ export default class LinkEditing extends Plugin {
 		editor.model.schema.extend('$text', { allowAttributes: 'linkHref' });
 
 		editor.conversion.for('dataDowncast')
-			.attributeToElement({ model: 'linkHref', view: createLinkElement });
+			.attributeToElement({
+				model: 'linkHref', view: (href, writer) => {
+					if (editor.config.get('link.forceAbsoluteLink'))
+						href = ensureAbsolute(href);
+					console.log('dataDowncast href', href);
+					return createLinkElement(href, writer);
+				}
+			});
 
 		editor.conversion.for('editingDowncast')
 			.attributeToElement({
 				model: 'linkHref',
 				view : (href, writer) => {
-					console.log('href',href);
 					href = ensureSafeUrl(href);
 					if (editor.config.get('link.forceAbsoluteLink'))
 						href = ensureAbsolute(href);
+					console.log('editingDowncast href', href);
 					return createLinkElement(href, writer);
 				}
 			});
